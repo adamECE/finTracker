@@ -1,6 +1,8 @@
 import pathlib 
 import argparse
+from src.config.env_vars import * 
 from FinDataExtraction.CreditCardExtraction import CreditCardExtraction
+from DB_Interface import DB_Interface_Base
 
 def SetupOpts(): 
     parser = argparse.ArgumentParser(description = "Financial Tracker Application")
