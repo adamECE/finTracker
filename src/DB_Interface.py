@@ -29,21 +29,28 @@ CREATE TABLE credit_card_payments (
 
 class DB_Interface_Base:
     def __init__(self, base_db_path : pathlib.Path):
-        if not os.path.exists(base_db_path):
-            raise FileNotFoundError(f"Directory path DNE: {base_db_path}")
-        
         # Init variables
         self.base_db_path   = base_db_path
         self.db_path        = os.path.join(base_db_path, DB_NAME)
         self.connection     = None 
         self.cursor         = None
 
+        self.___validateInputs___() 
+
         # Init db 
         self.___connect___() 
         self.___initTable___()
         self.___close___() 
 
-    
+
+    def ___validateInputs___(self):
+        if not os.path.exists(self.base_db_path):
+            raise FileNotFoundError(f"Directory path DNE: {self.base_db_path}")
+        
+        if not os.path.isdir(self.base_db_path):
+            raise NotADirectoryError(f"Input base_db_path is not a directory: {self.base_db_path}")
+
+
     def __del__(self):
         self.___close___()
 
