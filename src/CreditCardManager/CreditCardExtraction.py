@@ -3,6 +3,7 @@ import pathlib
 import pandas as pd 
 from abc import ABC, abstractmethod
 
+
 class CreditCardExtractorBase(ABC): 
     def __init__(self, name : str, issuer : str):
         self.name           = name 

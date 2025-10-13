@@ -1,7 +1,7 @@
 import pathlib 
 import argparse
 from config.env_vars import * 
-from DB_Interface import DB_Interface_Base
+from FinDbManager.CreditCardDB import CreditCardDB
 from CreditCardManager.BofaCreditCard import BofaCreditCard
 from ReportGenerator.PlotGenerator import PlotGenerator
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     
     cc_handle = BofaCreditCard(args.excel_path)  
     cc_handle.extractCreditCardFromExcelOrCsv(args.excel_path)
-    cc_df     = cc_handle.getRollupPayments()
+    cc_df = cc_handle.getRollupPayments()
 
     plot_gen_handle = PlotGenerator(DB_PATH)
     print(len(cc_df))
