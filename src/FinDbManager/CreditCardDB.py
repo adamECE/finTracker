@@ -45,7 +45,7 @@ class CreditCardDB(DB_Interface_Base):
 
     def _fetch_dict(self):
         """
-        @brief  Abstract method impleentation for handling entire database extraction 
+        @brief  Abstract method implementation for handling entire database extraction 
         """ 
         return self._readDb("SELECT * FROM credit_card_payments")
 

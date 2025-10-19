@@ -14,7 +14,14 @@ from DB_Interface_Base import DB_Interface_Base
 DB_TABLES = ['''
 CREATE TABLE category_map (
     category  TEXT NOT NULL,
-    value     TEXT NOT NULL
+    value     TEXT NOT NULL UNIQUE PRIMARY KEY
+);
+''',
+'''
+CREATE TABLE payee_map (
+    payee  TEXT NOT NULL,
+    value  TEXT NOT NULL UNIQUE,
+    FOREIGN KEY (value) REFERENCES category_map(value) ON DELETE CASCADE 
 );
 ''']
 
@@ -37,3 +44,13 @@ class DataCategorizationDb(DB_Interface_Base):
 class DataCategorizer:
     def __init__(self, base_db_path : pathlib.Path):
         self.db_handle = DataCategorizationDb(base_db_path)
+
+    
+    def manualCategorization(self, payee : str ): 
+        """
+        @brief  Super lame manual categorization 
+        """
+        while True: 
+            category = input("Select a category")
+            
+        

@@ -4,6 +4,7 @@ from config.env_vars import *
 from FinDbManager.CreditCardDB import CreditCardDB
 from CreditCardManager.BofaCreditCard import BofaCreditCard
 from ReportGenerator.PlotGenerator import PlotGenerator
+from CreditCardManager.DataCategorization import DataCategorizer
 
 def SetupOpts(): 
     parser = argparse.ArgumentParser(description = "Financial Tracker Application")
@@ -20,13 +21,15 @@ if __name__ == "__main__":
     cc_handle = BofaCreditCard(args.excel_path)  
     cc_handle.extractCreditCardFromExcelOrCsv(args.excel_path)
     cc_df = cc_handle.getRollupPayments()
+    breakpoint()
+    # plot_gen_handle = PlotGenerator(FIN_DB_PATH)
+    # print(len(cc_df))
+    # plot_gen_handle.createPieChart(
+    #     title="test",
+    #     width=6,
+    #     height=6,
+    #     labels=cc_df['Payee'],
+    #     sizes=cc_df['Amount']
+    # )  
 
-    plot_gen_handle = PlotGenerator(DB_PATH)
-    print(len(cc_df))
-    plot_gen_handle.createPieChart(
-        title="test",
-        width=6,
-        height=6,
-        labels=cc_df['Payee'],
-        sizes=cc_df['Amount']
-    )  
+    handle = DataCategorizer(CATEGORIZATION_DB_PATH)

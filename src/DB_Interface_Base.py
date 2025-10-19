@@ -76,7 +76,7 @@ class DB_Interface_Base(ABC):
     @abstractmethod
     def _fetch_dict(self):
         """
-        @brief  Abstract method for handling entire database extraction 
+        @brief   Abstract method for handling entire database extraction 
         """ 
         pass 
 
