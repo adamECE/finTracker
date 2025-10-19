@@ -26,15 +26,14 @@ class BofaCreditCard(CreditCardExtractorBase):
         @brief  Apply post extraction processing to self.credit_card_df
         @note   Implements abstract method from CreditCardExtractorBase
         '''        
-        # Determine base store names 
-        self.__determine_base_payee_name__()
-
         # For now, just remove cc payment (any positive value)
         self.credit_card_df = self.credit_card_df[self.credit_card_df['Amount'] <= 0]
 
         # Turn amount paid into a positive value          
         self.credit_card_df['Amount'] = self.credit_card_df['Amount'] * -1 
 
+        # Determine base payee names 
+        self.__determine_base_payee_name__()
     
     @contextmanager
     def ___safe_apply___(self):
@@ -44,24 +43,34 @@ class BofaCreditCard(CreditCardExtractorBase):
         
     
     def __determine_base_payee_name__(self):
-        # Create a copy of the original df for re-insertion
-        # with self.___safe_apply___() as temp_df :
-        #     self.credit_card_df['Payee'] = temp_df['Payee'].apply(lambda x: ' '.join(x.split()[:-2]))
-        breakpoint()
-        with self.___safe_apply___() as temp_df :
-            self.credit_card_df['Payee'] = temp_df['Payee'].apply(lambda x: ' '.join(x.split()[:3]))
-        
-        # REmove TST* from string (TST* is just a POS payment processor tag)
-        with self.___safe_apply___() as temp_df :
-            self.credit_card_df['Payee'] = temp_df['Payee'].str.replace(r'^TST\*', '', regex=True)
+        for i in self.credit_card_df.index:
+            full_payee_str = self.credit_card_df.at[i, 'Payee']
 
-        # Split based on store number i.e. #123 
-        with self.___safe_apply___() as temp_df :
-            self.credit_card_df['Payee'] = self.credit_card_df['Payee'].str.split('#').str[0] 
+            # *** Parse unnecessary characters to extract store name 
+            # Remove the last two words, which will always be the city+state 
+            full_payee_str = " ".join(full_payee_str.split()[:-2])
 
-        # Split based on any integer that occurs after an alphabetical character 
-        with self.___safe_apply___() as temp_df :
-            self.credit_card_df['Payee'] = temp_df['Payee'].str.extract(r'^(.*?[A-Za-z])(?=\d)') 
+            # Remove POS label 
+            full_payee_str = full_payee_str.replace('TST*', '')
+            full_payee_str = full_payee_str.replace('SPO*', '')
+
+            # Remove any '#' marked store id's
+            full_payee_str = full_payee_str.split('#')[0]
+
+            # Remove the all text after first instance of a character that appears after an alphabetical character
+            alphabetical_character_found = False 
+            for char_idx in range(len(full_payee_str)):
+                # Find index of first numerical character
+                if alphabetical_character_found and full_payee_str[char_idx].isdigit():
+                    full_payee_str = full_payee_str[:char_idx]
+                    break
+
+                # Mark first instance of an alphabetical character 
+                if full_payee_str[char_idx].isalpha():
+                    alphabetical_character_found = True 
+
+            # Finally update string 
+            self.credit_card_df.at[i, 'Payee'] = full_payee_str.strip()
 
 
     def getRollupPayments(self) -> None:
