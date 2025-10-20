@@ -27,7 +27,7 @@ class PlotGenerator:
             sizes   : List[float], 
             colors  : Optional[List[str]]   = None, 
             explode : Optional[List[float]] = None
-        ) -> None:
+        ) -> plt:
 
         plt.figure(figsize=(width, height)) 
 
@@ -43,5 +43,15 @@ class PlotGenerator:
 
         plt.title = title
         plt.axis('equal')
-        plt.show() 
+        return plt 
 
+
+    def createBarChartFromDf(self, df, label_col, value_col, title) -> plt:
+        plt.figure(figsize=(10, 6))
+        plt.bar(df[label_col], df[value_col], color='skyblue')
+        plt.xlabel(label_col)
+        plt.ylabel(value_col)
+        plt.title(title)
+        plt.xticks(rotation=90)
+        plt.tight_layout()
+        return plt 

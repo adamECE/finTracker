@@ -43,13 +43,6 @@ class CreditCardDB(DB_Interface_Base):
         super().__init__(DB_NAME, base_db_path, DB_TABLES)
 
 
-    def _fetch_dict(self):
-        """
-        @brief  Abstract method implementation for handling entire database extraction 
-        """ 
-        return self._readDb("SELECT * FROM credit_card_payments")
-
-
 def SetupOpts(): 
     parser = argparse.ArgumentParser(description = "Financial Tracker Application Database -- use for debugging")
 

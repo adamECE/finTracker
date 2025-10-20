@@ -1,10 +1,11 @@
+from enum import Enum
 
 # Set of categories
-PERSONAL_EXPENSES_ENUMS = {
-    "Groceries",
-    "Restaurants",
-    "Vehicle",
-    "Travel",
-    "Entertainment",
-    "Shopping"
-} 
+class ExpenseCategories(Enum):
+    GROCERIES       = "Groceries",
+    RESTARUANT      = "Restaurants",
+    VEHICLE         = "Vehicle",
+    TRAVEL          = "Travel",
+    ENTERTAINMENT   = "Entertainment",
+    SHOPPING        = "Shopping",
+    PENDING         = "Pending" # Default status before a categorization is made

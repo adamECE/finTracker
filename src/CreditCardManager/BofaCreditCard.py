@@ -2,7 +2,6 @@ import os
 import re 
 import sys
 import pathlib 
-import pandas as pd
 from contextlib import contextmanager
 
 # Import repo dependencies 
@@ -13,8 +12,6 @@ if match:
         sys.path.append(src_path)
 
 from CreditCardManager.CreditCardExtraction import CreditCardExtractorBase
-
-
 
 class BofaCreditCard(CreditCardExtractorBase):
     def __init__(self, name):
@@ -33,16 +30,12 @@ class BofaCreditCard(CreditCardExtractorBase):
         self.credit_card_df['Amount'] = self.credit_card_df['Amount'] * -1 
 
         # Determine base payee names 
-        self.__determine_base_payee_name__()
-    
-    @contextmanager
-    def ___safe_apply___(self):
-        temp_df = self.credit_card_df.copy()
-        yield temp_df 
-        self.credit_card_df['Payee'] = self.credit_card_df['Payee'].fillna(temp_df['Payee'])
+        self.__determineBasePayeeName__()
+
+        # Combine names with rapidfuzz 
         
     
-    def __determine_base_payee_name__(self):
+    def __determineBasePayeeName__(self):
         for i in self.credit_card_df.index:
             full_payee_str = self.credit_card_df.at[i, 'Payee']
 
@@ -68,6 +61,9 @@ class BofaCreditCard(CreditCardExtractorBase):
                 # Mark first instance of an alphabetical character 
                 if full_payee_str[char_idx].isalpha():
                     alphabetical_character_found = True 
+
+            # Remove any remaining special characters
+            full_payee_str = ''.join(c for c in full_payee_str if c.isalnum() or c.isspace())
 
             # Finally update string 
             self.credit_card_df.at[i, 'Payee'] = full_payee_str.strip()

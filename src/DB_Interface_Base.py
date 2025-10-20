@@ -1,6 +1,7 @@
 import os
 import pathlib 
 import sqlite3 
+import traceback
 import pandas as pd 
 from datetime import datetime 
 from abc import ABC, abstractmethod
@@ -72,32 +73,25 @@ class DB_Interface_Base(ABC):
             except sqlite3.Error as err:
                 print(f"Error closing connection: {err}") 
 
-    
-    @abstractmethod
-    def _fetch_dict(self):
-        """
-        @brief   Abstract method for handling entire database extraction 
-        """ 
-        pass 
 
-
-    def _readDb(self, query: str, params : dict = None) -> list: 
+    def _readDb(self, query: str, params : dict = None) -> pd.DataFrame: 
         """
         @brief  Protected function for handling read queries
         @param  query  : sql query in string form 
         @param  params : dictionary of :keyword to parameter value
         """ 
-        self.__connect__()
-        cursor  = self.__connection.cursor()
-        results = [] 
+        self.___connect___()
+        results = pd.DataFrame()
         try:
-            cursor.execute(query, params)
-            results = cursor.fetchall()
+            if params: 
+                results = pd.read_sql_query(query, self.__connection, params=params)
+            else:
+                results = pd.read_sql_query(query, self.__connection, params=params)
         except sqlite3.Error as e:
-            print(f"Database error occured: {e}") 
-            raise Exception("DB error occured")
+            traceback.print_exc()
+            raise Exception(f"DB error occured with query: {query}")
         finally:
-            self.__close__()
+            self.___close___()
         
         return results
 
@@ -108,17 +102,21 @@ class DB_Interface_Base(ABC):
         @param  query  : sql query in string form 
         @param  params : dictionary of :keyword to parameter value
         """
-        self.__connect__()
+        self.___connect___()
         cursor = self.__connection.cursor()
 
         try:
-            cursor.execute(query, params)
+            if params: 
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
             self.__connection.commit()
         except sqlite3.Error as e:
-            print(f"Database error occured: {e}")
-            raise Exception("DB error occured") 
+            traceback.print_exc()
+            raise Exception(f"DB error occured with query: {query}")
         finally:
-            self.__close__()
+            self.___close___()
 
 
     def exportToCsv(self):
