@@ -4,7 +4,9 @@ from config.env_vars import *
 from FinDbManager.CreditCardDB import CreditCardDB
 from CreditCardManager.BofaCreditCard import BofaCreditCard
 from ReportGenerator.PlotGenerator import PlotGenerator
+from ReportGenerator.HtmlReportGenerator import BuildHtmlReport
 from CreditCardManager.DataCategorization.DataCategorizer import DataCategorizer, DataCategorizationDb
+
 
 def SetupOpts(): 
     parser = argparse.ArgumentParser(description = "Financial Tracker Application")
@@ -18,24 +20,20 @@ def SetupOpts():
 if __name__ == "__main__":
     args = SetupOpts() 
     
+    # Extract credit card data
     cc_handle = BofaCreditCard(args.excel_path)  
     cc_handle.extractCreditCardFromExcelOrCsv(args.excel_path)
     cc_df = cc_handle.getRollupPayments()
 
+    # Categorize Data     
+    data_categorizer_handle = DataCategorizer(CATEGORIZATION_DB_PATH)
+    data_categorizer_handle.categorizeFromArray(list(cc_df['Payee']))
+
+    # Build Report
     plot_gen_handle = PlotGenerator(FIN_DB_PATH)
-    # plot_gen_handle.createPieChart(
-    #     title="test",
-    #     width=6,
-    #     height=6,
-    #     labels=cc_df['Payee'],
-    #     sizes=cc_df['Amount']
-    # )  
+    fig = plot_gen_handle.createBarChartFromDf(cc_df, 'Payee', 'Amount', 'test')
+    html_handle = BuildHtmlReport(None, "TEST NAME")
+    html_handle.appendFig(fig)
+    html_handle.finalizeHtml()
 
-    # data_categorizer_handle = DataCategorizer(CATEGORIZATION_DB_PATH)
-    # data_categorizer_handle.categorizeFromArray([x for x in cc_df['Payee']])
-
-    plot_gen_handle.createBarChartFromDf(cc_df, 'Payee', 'Amount', 'test')
-
-    cat_db_handle = DataCategorizationDb(CATEGORIZATION_DB_PATH)
-    cat_db_handle.exportToCsv()
     # handle = DataCategorizer(CATEGORIZATION_DB_PATH)

@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 from typing import List, Optional
 
 class PlotGenerator: 
-    def __init__(self, save_fig_dir : pathlib.Path):
+    def __init__(self, save_fig_dir : pathlib.Path, show_plots : bool = False):
         self.save_fig_dir = save_fig_dir
+
+        # TODO : Maybe make this an input for functions instead
+        self.show_plots   = show_plots
 
         self.___validateInputs___()
 
@@ -27,9 +30,9 @@ class PlotGenerator:
             sizes   : List[float], 
             colors  : Optional[List[str]]   = None, 
             explode : Optional[List[float]] = None
-        ) -> plt:
+        ) -> plt.figure:
 
-        plt.figure(figsize=(width, height)) 
+        fig = plt.figure(figsize=(width, height)) 
 
         plt.pie(
             sizes,  
@@ -43,15 +46,23 @@ class PlotGenerator:
 
         plt.title = title
         plt.axis('equal')
-        return plt 
+        
+        if self.show_plots:
+            plt.show()
+
+        return fig 
 
 
-    def createBarChartFromDf(self, df, label_col, value_col, title) -> plt:
-        plt.figure(figsize=(10, 6))
+    def createBarChartFromDf(self, df, label_col, value_col, title) -> plt.figure:
+        fig = plt.figure(figsize=(10, 6))
         plt.bar(df[label_col], df[value_col], color='skyblue')
         plt.xlabel(label_col)
         plt.ylabel(value_col)
         plt.title(title)
         plt.xticks(rotation=90)
         plt.tight_layout()
-        return plt 
+
+        if self.show_plots:
+            plt.show()
+
+        return fig

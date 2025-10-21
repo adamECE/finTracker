@@ -31,8 +31,6 @@ class BofaCreditCard(CreditCardExtractorBase):
 
         # Determine base payee names 
         self.__determineBasePayeeName__()
-
-        # Combine names with rapidfuzz 
         
     
     def __determineBasePayeeName__(self):
