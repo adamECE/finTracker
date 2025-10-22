@@ -5,7 +5,7 @@ import webbrowser
 import matplotlib.pyplot as plt 
 
 from io import BytesIO
-
+from datetime import datetime
 
 class BuildHtmlReport:
     def __init__(self, html_output_path : pathlib.Path, report_title : str):
@@ -14,10 +14,10 @@ class BuildHtmlReport:
         # Init variables 
         self.html = f"""
         <html>
-        <head><title>{report_title}</title></head>
+        <head><title>{report_title} : {datetime.now().strftime("%Y-%m-%d %H:00")}</title></head>
         <body>
-            <h1>Report Summary</h1>
-            <p>This report contains several plots.</p>
+            <h1>{report_title} : </h1>
+            <phis report contains several plots.</p>
         """
 
 
@@ -40,6 +40,10 @@ class BuildHtmlReport:
         
         # TODO: just make this point to og path
         webbrowser.open(f"file://{os.path.abspath('report.html')}")
+
+
+    def appendParagraph(self, para_str : str):
+        self.html += f'<p>{para_str}</p>\n'
 
 
     def appendFig(self, fig):
