@@ -16,6 +16,10 @@ from CreditCardManager.CreditCardExtraction import CreditCardExtractorBase
 class BofaCreditCard(CreditCardExtractorBase):
     def __init__(self, name):
         super().__init__(name, 'BANK_OF_AMERICA')
+        
+        self.basic_report_info = {
+
+        } 
 
     
     def ___payemntDataProcessing___(self) -> None:
@@ -67,6 +71,13 @@ class BofaCreditCard(CreditCardExtractorBase):
             self.credit_card_df.at[i, 'Payee'] = full_payee_str.strip()
 
 
+    def ___getBasicReportInfo___(self, start_date, end_date):
+        """
+        TODO: maybe make public idk 
+        """
+        pass
+
+
     def getRollupPayments(self) -> None:
         # should probably be in base class 
         return self.credit_card_df.groupby('Payee', as_index=False)['Amount'].sum() 
@@ -82,4 +93,16 @@ class BofaCreditCard(CreditCardExtractorBase):
             "payee"          : "Payee",
             "amount_paid"    : "Amount"
         }
+
+        return df_col_mappings 
+    
+
+    def getBasicReportInfoForMonth(self, month, year) -> dict:
+        """
+        TODO
+        """
+        pass 
+
+        
+
 
