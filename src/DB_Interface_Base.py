@@ -118,6 +118,22 @@ class DB_Interface_Base(ABC):
         finally:
             self.___close___()
 
+    
+    def _writeDf(self, df : pd.DataFrame, table_name : str) -> None: 
+        self.___connect___()
+        
+        try:
+            df.to_sql(
+                name      = table_name,  
+                con       = self.__connection,          
+                index     = False         
+            )
+        except sqlite3.Error as e: 
+            traceback.print_exc()
+            raise Exception(f"DB error when writing df to {table_name}")
+        finally:
+            self.___close___()
+
 
     def exportToCsv(self):
         """

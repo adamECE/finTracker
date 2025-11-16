@@ -2,9 +2,11 @@ import os
 import re 
 import sys
 import pathlib 
+import pandas as pd 
+from datetime import datetime
 from contextlib import contextmanager
 
-# Import repo dependencies 
+# Import repo dependencies
 match = re.search(r".*fintracker\\src", os.path.abspath(__file__))
 if match:
     src_path = str(pathlib.Path(match.group()))
@@ -15,11 +17,10 @@ from CreditCardManager.CreditCardExtraction import CreditCardExtractorBase
 
 class BofaCreditCard(CreditCardExtractorBase):
     def __init__(self, name):
-        super().__init__(name, 'BANK_OF_AMERICA')
-        
-        self.basic_report_info = {
+        self.CC_NAME = 'BANK_OF_AMERICA'
 
-        } 
+        super().__init__(name, self.CC_NAME)
+        
 
     
     def ___payemntDataProcessing___(self) -> None:
@@ -71,16 +72,15 @@ class BofaCreditCard(CreditCardExtractorBase):
             self.credit_card_df.at[i, 'Payee'] = full_payee_str.strip()
 
 
-    def ___getBasicReportInfo___(self, start_date, end_date):
-        """
-        TODO: maybe make public idk 
-        """
-        pass
+    def getCreditCardDf(self):
+        df = self.credit_card_df.__deepcopy__() 
+        df['credit_card_name'] = "BANK_OF_AMERICA"
+        return df 
 
 
-    def getRollupPayments(self) -> None:
-        # should probably be in base class 
-        return self.credit_card_df.groupby('Payee', as_index=False)['Amount'].sum() 
+    def getRollupPayments(self, target_df : pd.DataFrame) -> None:
+        # should probably be in base class
+        return target_df.groupby('Payee', as_index=False)['Amount'].sum() 
 
 
     def getDfColumnMapping(self) -> dict:
@@ -97,11 +97,8 @@ class BofaCreditCard(CreditCardExtractorBase):
         return df_col_mappings 
     
 
-    def getBasicReportInfoForMonth(self, month, year) -> dict:
-        """
-        TODO
-        """
-        pass 
+
+
 
         
 

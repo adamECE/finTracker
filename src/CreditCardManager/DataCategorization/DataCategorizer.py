@@ -106,10 +106,7 @@ class DataCategorizer:
             # finalize push 
             self.db_handle.insertPayee(payee, final_payee_value, ExpenseCategories.PENDING, category_map_list)
             
-
-                
-
-    
+ 
     def manualCategorization(self, payee : str ): 
         """
         @brief  Super lame manual categorization || TODO 

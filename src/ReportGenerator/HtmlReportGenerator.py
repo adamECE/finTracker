@@ -48,6 +48,16 @@ class BuildHtmlReport:
 
     def appendFig(self, fig):
         png_str = self.___encodePng___(fig)
-        self.html += f'<img src="data:image/png;base64,{png_str}" /><br>'
+        self.html += f'\n<img src="data:image/png;base64,{png_str}" /><br>'
         
-        
+
+    def appendWidget(self, w_title : str, h2_element : str = "", w_para : str = ""):
+        self.html += f'\n<div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; width: fit-content;">'  
+
+        # Append features 
+        self.html += f'\n<h1>{w_title}</h1>'
+        self.html += f'\n<h1>{h2_element}</h1>' if h2_element else "" 
+        self.html += f'\n<h1>{w_para}</h1>' if w_para else "" 
+
+
+        self.html += "\n</div>"
